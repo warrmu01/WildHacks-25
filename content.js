@@ -1,139 +1,105 @@
-// Inject the Watcher Avatar if not already present
-function classifyURL(url) {
+// content.js
 
-  const badSites = ["youtube.com", "twitter.com", "reddit.com", "instagram.com"]
-  const goodSites = ["docs.google.com", "github.com", "linkedin.com/feed/"]
+// Create a container div to hold BOTH the avatar and the speech bubble
+if (!document.getElementById("watcher-container")) {
+  const container = document.createElement("div");
+  container.id = "watcher-container";
+  container.style.position = "fixed";
+  container.style.top = "20px";
+  container.style.right = "20px";
+  container.style.zIndex = "9999";
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.alignItems = "center";
+  container.style.userSelect = "none";
+  container.style.pointerEvents = "none"; // So it doesn’t block clicks on page
 
-  if (badSites.some(domain => url.includes(domain))) return "mad";
-  if (goodSites.some(domain => url.includes(domain))) return "happy";
-  return "confused";
+  // Create the Watcher Avatar (Ghost)
+  const watcher = document.createElement("img");
+  watcher.src = chrome.runtime.getURL("assets/coach_base.png");
+  watcher.id = "the-watcher-avatar";
+  watcher.style.width = "200px";
+  watcher.style.height = "200px";
+  watcher.style.maxWidth = "220px";
+  watcher.style.maxHeight = "220px";
+  watcher.style.minWidth = "80px";
+  watcher.style.minHeight = "80px";
+  watcher.style.objectFit = "contain";
+  watcher.style.marginBottom = "5px"; // small gap to bubble
+
+  const speech = document.createElement("div");
+  speech.id = "watcher-speech";
+  speech.style.padding = "8px 12px";
+  speech.style.backgroundColor = "#ffffff";
+  speech.style.border = "1px solid #000";
+  speech.style.borderRadius = "8px";
+  speech.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.2)";
+  speech.style.fontSize = "14px";
+  speech.style.maxWidth = "200px";
+  speech.style.wordWrap = "break-word";
+  speech.style.textAlign = "center";
+  speech.style.position = "relative"; // for the triangle
+  speech.style.display = "none";
+
+  // Add the triangle pointer
+  const triangle = document.createElement("div");
+  triangle.style.position = "absolute";
+  triangle.style.bottom = "-10px";
+  triangle.style.left = "50%";
+  triangle.style.transform = "translateX(-50%)";
+  triangle.style.width = "0";
+  triangle.style.height = "0";
+  triangle.style.borderLeft = "8px solid transparent";
+  triangle.style.borderRight = "8px solid transparent";
+  triangle.style.borderTop = "10px solid #ffffff"; // same as bubble color
+
+  speech.appendChild(triangle);
+
+  // Assemble
+  container.appendChild(watcher);
+  container.appendChild(speech);
+  document.body.appendChild(container);
 }
 
-// Move message listener OUTSIDE of injectCoach function
+// ===== Function to show speech bubble =====
+function showSpeech(text) {
+  const speech = document.getElementById("watcher-speech");
+  if (!speech) return;
+
+  speech.textContent = text;
+  speech.style.display = "block";
+
+  // Hide after 5 seconds
+  setTimeout(() => {
+    speech.style.display = "none";
+  }, 5000);
+}
+
+// ===== Listen for Messages =====
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "removeCoach") {
-    const watcher = document.getElementById("the-watcher-avatar");
-    if (watcher) watcher.remove();
-  }
+  const container = document.getElementById("watcher-container");
+  const watcher = document.getElementById("the-watcher-avatar");
+  const speech = document.getElementById("watcher-speech");
 
-  if (message.action === "addCoach") {
-    injectCoach();
-
-    // Get current page's URL and classify it
-    const mood = classifyURL(window.location.href);
-    const moodMap = {
-      happy: "coach_happy.png",
-      mad: "coach_mad.png",
-      confused: "coach_confused.png",
-      base: "coach_base.png"
-    };
-
-    const watcher = document.getElementById("the-watcher-avatar");
-    if (watcher) {
-      watcher.src = chrome.runtime.getURL("assets/" + (moodMap[mood] || moodMap.base));
-    }
-  }
+  if (!watcher || !speech || !container) return;
 
   if (message.action === "changeMood") {
-    const watcher = document.getElementById("the-watcher-avatar");
-    if (watcher) {
-      const moodMap = {
-        happy: "coach_happy.png",
-        mad: "coach_mad.png",
-        confused: "coach_confused.png",
-        base: "coach_base.png"
-      };
-      watcher.src = chrome.runtime.getURL("assets/" + (moodMap[message.mood] || moodMap.base));
+    if (message.mood === "happy") {
+      watcher.src = chrome.runtime.getURL("assets/coach_happy.png");
+      showSpeech("Good job, detective! 🕵️‍♂️");
+    } else if (message.mood === "mad") {
+      watcher.src = chrome.runtime.getURL("assets/coach_mad.png");
+      showSpeech("Busted! Get back to work. 🚨");
+    } else if (message.mood === "confused") {
+      watcher.src = chrome.runtime.getURL("assets/coach_confused.png");
+      showSpeech("Hmm... what are you doing? 🤔");
+    } else {
+      watcher.src = chrome.runtime.getURL("assets/coach_base.png");
     }
-  }
-});
-
-function injectCoach() {
-  if (!document.getElementById("the-watcher-avatar")) {
-    const watcher = document.createElement("img");
-    watcher.src = chrome.runtime.getURL("assets/coach_base.png"); // Default image
-    watcher.id = "the-watcher-avatar";
-
-    // Style the avatar
-    watcher.style.position = "fixed";
-    watcher.style.top = "50px";
-    watcher.style.left = "auto";
-    watcher.style.right = "-62px";
-    watcher.style.width = "200px";
-    watcher.style.height = "200px";
-    watcher.style.zIndex = "9999";
-    watcher.style.cursor = "grab";
-    watcher.style.userSelect = "none";
-    watcher.style.transition = "transform 0.1s ease-in-out";
-
-    document.body.appendChild(watcher);
-
-    // Enable drag functionality
-    let isDragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    watcher.addEventListener("mousedown", (e) => {
-      isDragging = true;
-      offsetX = e.clientX - watcher.getBoundingClientRect().left;
-      offsetY = e.clientY - watcher.getBoundingClientRect().top;
-      watcher.style.transition = "none";
-      watcher.style.cursor = "grabbing";
-    });
-
-    document.addEventListener("mousemove", (e) => {
-      if (isDragging) {
-        const x = e.clientX - offsetX;
-        const y = e.clientY - offsetY;
-        watcher.style.left = `${x}px`;
-        watcher.style.top = `${y}px`;
-        watcher.style.right = "auto";
-        watcher.style.position = "fixed";
-      }
-    });
-
-    document.addEventListener("mouseup", () => {
-      if (isDragging) {
-        isDragging = false;
-        watcher.style.transition = "transform 0.2s ease-in-out";
-        watcher.style.cursor = "grab";
-      }
-    });
-  }
-}
-
-// Check if coach is enabled in storage before injecting
-chrome.storage.local.get("coachEnabled", (data) => {
-  if (data.coachEnabled !== false) {
-    injectCoach();
-  }
-});
-
-// Add a listener for storage changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'local' && changes.coachEnabled) {
-    // If coachEnabled changed
-    if (changes.coachEnabled.newValue === false) {
-      // If it was set to false, remove the coach
-      const watcher = document.getElementById("the-watcher-avatar");
-      if (watcher) watcher.remove();
-    } else if (changes.coachEnabled.newValue === true) {
-      // If it was set to true, add the coach
-      injectCoach();
-
-      // Set the appropriate mood
-      const mood = classifyURL(window.location.href);
-      const moodMap = {
-        happy: "coach_happy.png",
-        mad: "coach_mad.png",
-        confused: "coach_confused.png",
-        base: "coach_base.png"
-      };
-
-      const watcher = document.getElementById("the-watcher-avatar");
-      if (watcher) {
-        watcher.src = chrome.runtime.getURL("assets/" + (moodMap[mood] || moodMap.base));
-      }
-    }
+  } else if (message.action === "removeCoach") {
+    container.style.display = "none"; // Hide the WHOLE container (ghost + speech)
+  } else if (message.action === "addCoach") {
+    container.style.display = "flex"; // Show the WHOLE container (ghost + speech)
+    speech.style.display = "none"; // Reset speech hidden
   }
 });
