@@ -3,7 +3,7 @@
   "name": "The Watcher",
   "version": "1.0",
   "description": "Your sarcastic AI coach that roasts your productivity habits.",
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "storage", "identity"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -35,6 +35,18 @@
     "16": "assets/coach_base.png",
     "48": "assets/coach_base.png",
     "128": "assets/coach_base.png"
-  }
-
+  },
+  "oauth2": {
+    "client_id": "999419271104-uefutfr0qcomskt95elsm3kcae4c6u6v.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.readonly",
+      "openid",
+      "profile",
+      "email"
+    ]
+  },
+  "host_permissions": [
+  "https://accounts.google.com/*",
+  "https://www.googleapis.com/*"
+]
 }
