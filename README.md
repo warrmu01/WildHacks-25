@@ -10,7 +10,6 @@ Built for [Wild Hacks 2025], this project uses **Gemini AI**, **Google Calendar 
 - 🗓️ **Google Calendar Integration**: Syncs with your calendar to track productivity windows.
 - 🧠 **Gemini API**: Powers the coach's witty feedback, motivational nudges, and sarcastic commentary.
 - 👀 **Tab Tracking (Chrome Extension)**: Monitors tab usage to detect procrastination (Reddit, YouTube, etc... we see you).
-- 📝 **To-Do Tracking (Coming Soon)**: Manage and sync tasks for smarter productivity suggestions.
 
 ## 🚀 How It Works
 
@@ -59,4 +58,4 @@ All work in this repository is original and created by our team during the hacka
 
 ---
 
-Made with Redbull, chaos, and just a bunch of friends at Wild Hacks 2025.
+Made with Redbull, chaos, and just a bunch of free food at Wild Hacks 2025.
