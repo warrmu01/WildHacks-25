@@ -5,7 +5,8 @@
   "description": "Your sarcastic AI coach that roasts your productivity habits.",
   "permissions": ["tabs", "storage"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
