@@ -198,4 +198,18 @@ setInterval(() => {
       }
     }
   }
-}, 5000); // every 5 seconds
+
+(async () => {
+    const { isInTaskWindow } = await import(chrome.runtime.getURL("auth/calendar_api.js"));
+  
+    chrome.storage.local.get(["coachEnabled", "googleAuthToken"], async ({ coachEnabled, googleAuthToken }) => {
+      if (coachEnabled === false || !googleAuthToken) return;
+  
+      const inTask = await isInTaskWindow(googleAuthToken);
+      if (inTask) {
+        injectCoach();
+      } else {
+        console.log("⏱️ Not in task window – coach will not appear");
+      }
+    });
+  })();

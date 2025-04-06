@@ -1,3 +1,8 @@
+import { authenticateWithGoogle } from './auth/google_oauth.js';
+import { fetchCalendarEvents } from "./auth/calendar_api.js";
+
+console.log("✅ popup.js is running!");
+
 function sendToContent(action) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action });
@@ -18,17 +23,21 @@ document.getElementById("add-btn").addEventListener("click", () => {
   });
 });
 
-// popup.js
+// ✅ Single auth handler
+document.getElementById("auth-btn").addEventListener("click", async () => {
+  try {
+    const token = await authenticateWithGoogle();
+    console.log("🎉 Got token:", token);
+    chrome.storage.local.set({ googleAuthToken: token });
 
-function updateTimes() {
-  chrome.storage.local.get(["GoodTime", "BadTime"], (result) => {
-    document.getElementById("good-time").textContent = result.GoodTime || 0;
-    document.getElementById("bad-time").textContent = result.BadTime || 0;
-  });
-}
+    const events = await fetchCalendarEvents(token);
+    console.log("📅 Events received:", events);
 
-// Update immediately when popup opens
-updateTimes();
+    // Optional: Trigger mood or do something else with the events
 
-// (Optional) Refresh every few seconds if popup stays open
-setInterval(updateTimes, 5000);
+  } catch (err) {
+    console.error("❌ Error during login or fetch:", err);
+  }
+});
+
+
