@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Procrastin-AI",
+  "name": "The Watcher",
   "version": "1.0",
   "description": "Your sarcastic AI coach that roasts your productivity habits.",
   "permissions": ["tabs", "storage"],
@@ -19,7 +19,8 @@
         "assets/coach_base.png",
         "assets/coach_happy.png",
         "assets/coach_mad.png",
-        "assets/coach_confused.png"],
+        "assets/coach_confused.png"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
