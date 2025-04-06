@@ -1,22 +1,36 @@
 {
-    "manifest_version": 3,
-    "name": "Procrastin-AI",
-    "version": "1.0",
-    "description": "Your sarcastic AI coach that roasts your productivity habits.",
-    "permissions": ["tabs", "storage"],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": "icon.png"
-    },
-    "background": {
-      "service_worker": "background.js"
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
-      }
-    ]
+  "manifest_version": 3,
+  "name": "Procrastin-AI",
+  "version": "1.0",
+  "description": "Your sarcastic AI coach that roasts your productivity habits.",
+  "permissions": ["tabs", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/coach_base.png",
+        "assets/coach_happy.png",
+        "assets/coach_mad.png",
+        "assets/coach_confused.png"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "assets/coach_base.png"
+    }
+  },
+  "icons": {
+    "16": "assets/coach_base.png",
+    "48": "assets/coach_base.png",
+    "128": "assets/coach_base.png"
   }
-
-  
+}
