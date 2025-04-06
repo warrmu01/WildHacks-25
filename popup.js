@@ -39,3 +39,5 @@ document.getElementById("auth-btn").addEventListener("click", async () => {
     console.error("❌ Error during login or fetch:", err);
   }
 });
+
+

@@ -1,7 +1,7 @@
 // Inject the Watcher Avatar if not already present
 function classifyURL(url) {
 
-  const badSites = ["youtube.com", "twitter.com", "reddit.com", "instagram.com"]
+  const badSites = ["youtube.com", "twitter.com", "reddit.com", "instagram.com", "https://mail.google.com/mail/u/0/#inbox"]
   const goodSites = ["docs.google.com", "github.com", "linkedin.com/feed/"]
 
   if (badSites.some(domain => url.includes(domain))) return "mad";

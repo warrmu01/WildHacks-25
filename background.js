@@ -2,7 +2,7 @@
 import { classifyURL } from "./util/tabutils.js";
 import { isInTaskWindow } from "./auth/calendar_api.js";
 
-// 🔄 Check Google Calendar every 5 minutes
+// 🔄 Check Google Calendar every 2 minutes
 async function checkTasksPeriodically() {
   const { googleAuthToken } = await chrome.storage.local.get(["googleAuthToken"]);
   if (!googleAuthToken) return;
@@ -37,7 +37,7 @@ async function checkTasksPeriodically() {
 // ✅ Run once on startup
 checkTasksPeriodically();
 
-// 🕔 Run every 5 minutes
+// 🕔 Run every 2 minutes
 setInterval(checkTasksPeriodically, 2 * 60 * 1000);
 
 // 🧠 On tab update, set mood + inject coach if allowed
