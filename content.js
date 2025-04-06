@@ -8,7 +8,6 @@ let inGracePeriod = false;
 const GRACE_PERIOD = 5; // seconds before "mad"
 const THREE_MINUTES = 15; // seconds of good behavior for reward
 
-// ===== Classify URL =====
 function classifyURL(url) {
   const badSites = [
     "youtube.com", "twitter.com", "reddit.com", "instagram.com",
