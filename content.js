@@ -1,4 +1,5 @@
 // ===== Constants & State =====
+// ===== Constants & State =====
 let lastSiteType = null;
 let goodConsecutiveSeconds = 0;
 let lastRecordedActiveSeconds = 0;
@@ -27,11 +28,32 @@ function classifyURL(url) {
 function injectCoach() {
   if (document.getElementById("watcher-container")) return;
 
+  const container = document.createElement("div");
+  container.id = "watcher-container";
+  container.style.position = "fixed";
+  container.style.top = "50px";
+  container.style.right = "-62px";
+  container.style.left = "auto";
+  container.style.zIndex = "9999";
+  container.style.display = "flex";
+  container.style.flexDirection = "row-reverse";
+  container.style.alignItems = "center";
+  container.style.userSelect = "none";
+
+  const watcher = document.createElement("img");
+  watcher.src = chrome.runtime.getURL("assets/coach_base.png");
+  watcher.id = "the-watcher-avatar";
+  watcher.style.width = "200px";
+  watcher.style.height = "200px";
+  watcher.style.zIndex = "9999";
+  watcher.style.cursor = "grab";
+  watcher.style.userSelect = "none";
+  watcher.style.transition = "transform 0.1s ease-in-out";
+  watcher.style.objectFit = "contain";
+  watcher.style.marginLeft = "10px";
+
   const speech = document.createElement("div");
   speech.id = "watcher-speech";
-  speech.style.position = "fixed";
-  speech.style.top = "50px";
-  speech.style.left = "20px";
   speech.style.padding = "10px 15px";
   speech.style.backgroundColor = "#ffffff";
   speech.style.border = "2px solid #000";
@@ -41,7 +63,9 @@ function injectCoach() {
   speech.style.maxWidth = "220px";
   speech.style.wordBreak = "break-word";
   speech.style.textAlign = "center";
+  speech.style.position = "relative";
   speech.style.display = "none";
+  speech.style.marginRight = "10px";
 
   const triangle = document.createElement("div");
   triangle.style.position = "absolute";
@@ -54,42 +78,14 @@ function injectCoach() {
   triangle.style.marginTop = "-1px";
   speech.appendChild(triangle);
 
-  const container = document.createElement("div");
-  container.id = "watcher-container";
-  container.style.position = "fixed";
-  container.style.top = "50px";
-  container.style.right = "-62px";
-  container.style.left = "auto";
-  container.style.zIndex = "9999";
-  container.style.display = "flex";
-  container.style.flexDirection = "column";
-  container.style.alignItems = "center";
-  container.style.userSelect = "none";
-
-  const watcher = document.createElement("img");
-  watcher.src = chrome.runtime.getURL("assets/coach_base.png");
-  watcher.id = "the-watcher-avatar";
-  watcher.style.position = "fixed";
-  watcher.style.top = "50px";
-  watcher.style.right = "-62px";
-  watcher.style.left = "auto";
-  watcher.style.width = "200px";
-  watcher.style.height = "200px";
-  watcher.style.zIndex = "9999";
-  watcher.style.cursor = "grab";
-  watcher.style.userSelect = "none";
-  watcher.style.transition = "transform 0.1s ease-in-out";
-  watcher.style.objectFit = "contain";
-  watcher.style.marginTop = "0px";
-
   container.appendChild(watcher);
+  container.appendChild(speech);
   document.body.appendChild(container);
-  document.body.appendChild(speech);
 
   // Enable drag
   let isDragging = false;
   let offsetX = 0, offsetY = 0;
-  watcher.addEventListener("mousedown", (e) => {
+  container.addEventListener("mousedown", (e) => {
     isDragging = true;
     offsetX = e.clientX - container.getBoundingClientRect().left;
     offsetY = e.clientY - container.getBoundingClientRect().top;
@@ -111,7 +107,6 @@ function injectCoach() {
     }
   });
 }
-
 // ===== Helpers
 function showSpeech(text) {
   const speech = document.getElementById("watcher-speech");
