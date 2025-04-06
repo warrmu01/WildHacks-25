@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>The Watcher</title>
+    <style>
+      body {
+        min-width: 220px;
+        font-family: 'Courier New', monospace;
+        padding: 20px;
+        background-color: #1a1a1a;
+        background-image: 
+          linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 5v1H5z'/%3E%3Cpath d='M4 0h1L0 4v1H4z'/%3E%3Cpath d='M3 0h1L0 3v1H3z'/%3E%3Cpath d='M2 0h1L0 2v1H2z'/%3E%3Cpath d='M1 0h1L0 1v1H1z'/%3E%3Cpath d='M6 5v1H5z'/%3E%3Cpath d='M6 4v1H4z'/%3E%3Cpath d='M6 3v1H3z'/%3E%3Cpath d='M6 2v1H2z'/%3E%3Cpath d='M6 1v1H1z'/%3E%3C/g%3E%3C/svg%3E");
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid #333;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.05);
+        color: #ddd;
+        position: relative;
+      }
+      
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          -45deg,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0) 10px,
+          rgba(0, 0, 0, 0.1) 10px,
+          rgba(0, 0, 0, 0.1) 20px
+        );
+        z-index: -1;
+        border-radius: 8px;
+      }
+      
+      .logo {
+        width: 180px;
+        height: 180px;
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+        opacity: 0.9;
+        transition: all 0.3s ease;
+      }
+      
+      .logo:hover {
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
+        opacity: 1;
+      }
+      
+      h3 {
+        margin: 0px 0 25px;
+        font-size: 22px;
+        color: #ffcc00;
+        font-weight: normal;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+        position: relative;
+      }
+      
+      h3::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+      }
+      
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        z-index: 2;
+      }
+      
+      button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: normal;
+        font-family: 'Courier New', monospace;
+        border: 1px solid #444;
+        border-radius: 4px;
+        background-color: #222;
+        color: #ccc;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      button::before {
+        content: "»";
+        position: absolute;
+        left: 10px;
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      
+      button:hover {
+        background-color: #333;
+        color: #ffcc00;
+        padding-left: 25px;
+      }
+      
+      button:hover::before {
+        opacity: 1;
+      }
+      
+      button:active {
+        transform: translateY(2px);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      }
+      
+      #remove-btn::after, #add-btn::after, #auth-btn::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 204, 0, 0.1), transparent);
+        transition: 0.5s;
+      }
+      
+      button:hover::after {
+        left: 100%;
+      }
+      
+      .fingerprint {
+        position: absolute;
+        opacity: 0.05;
+        width: 100px;
+        height: 100px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23ffffff' d='M50,12.5c-20.7,0-37.5,16.8-37.5,37.5S29.3,87.5,50,87.5S87.5,70.7,87.5,50S70.7,12.5,50,12.5z M50,20c16.6,0,30,13.4,30,30S66.6,80,50,80S20,66.6,20,50S33.4,20,50,20z M50,27.5c-12.4,0-22.5,10.1-22.5,22.5S37.6,72.5,50,72.5S72.5,62.4,72.5,50S62.4,27.5,50,27.5z M50,35c8.3,0,15,6.7,15,15s-6.7,15-15,15s-15-6.7-15-15S41.7,35,50,35z M50,42.5c-4.1,0-7.5,3.4-7.5,7.5s3.4,7.5,7.5,7.5s7.5-3.4,7.5-7.5S54.1,42.5,50,42.5z'/%3E%3C/svg%3E");
+        z-index: 0;
+      }
+      
+      .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+        font-style: italic;
+      }
+      
+      .crime-tape {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: repeating-linear-gradient(
+          45deg,
+          #ffcc00,
+          #ffcc00 10px,
+          #111 10px,
+          #111 20px
+        );
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fingerprint" style="top:10%; right:10%;"></div>
+    <div class="fingerprint" style="bottom:20%; left:15%;"></div>
+    
+    <img src="assets/coach_base.png" alt="The Watcher Logo" class="logo" />
+    
+    <h3>The Watcher</h3>
+    
+    <div class="button-container">
+      <button id="remove-btn">Dismiss Detective</button>
+      <button id="add-btn">Recall Detective</button>
+      <button id="auth-btn">Secure Connection</button>
+    </div>
+    
+    <div class="footer">
+      "Tracking your digital footprints"
+    </div>
+    
+    <div class="crime-tape"></div>
+    
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
