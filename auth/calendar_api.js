@@ -1,13 +1,19 @@
 export async function fetchCalendarEvents(accessToken) {
     const calendarId = 'primary';
   
-    // Get today’s start and end in ISO
+    // ⏱ Get current time
     const now = new Date();
-    const startOfDay = new Date(now.setHours(0, 0, 0, 0)).toISOString();
-    const endOfDay = new Date(now.setHours(23, 59, 59, 999)).toISOString();
+  
+    // 🔁 Round down to nearest 15 minutes
+    const minutes = Math.floor(now.getMinutes() / 15) * 15;
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), minutes, 0, 0);
+    const end = new Date(start.getTime() + 15 * 60 * 1000); // +15 minutes
+  
+    const timeMin = start.toISOString();
+    const timeMax = end.toISOString();
   
     const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?` +
-                `timeMin=${startOfDay}&timeMax=${endOfDay}&` +
+                `timeMin=${timeMin}&timeMax=${timeMax}&` +
                 `singleEvents=true&orderBy=startTime`;
   
     const response = await fetch(url, {
@@ -24,30 +30,28 @@ export async function fetchCalendarEvents(accessToken) {
     const data = await response.json();
   
     const events = data.items.map(event => ({
-            title: event.summary,
-            start: event.start.dateTime || event.start.date, // supports all-day events
-            end: event.end.dateTime || event.end.date
-          
+      title: event.summary || "No Title",
+      start: event.start.dateTime || event.start.date,
+      end: event.end.dateTime || event.end.date
     }));
   
-    console.log("📅 Today's Events:", events);
+    console.log("📅 Events in 15-minute window:", events);
     return events;
   }
   
-export async function isInTaskWindow(accessToken) {
+  export async function isInTaskWindow(accessToken) {
     const events = await fetchCalendarEvents(accessToken);
     const now = new Date();
     console.log("📅 Current time:", now.toISOString());
-    console.log("📅 Events:", events);
+    console.log("📅 Checking events for overlap...");
   
     return events.some(event => {
       const start = new Date(event.start);
       const end = new Date(event.end);
-      console.log(`🔍 Checking event: ${event.title}`);
-      console.log(`   Start: ${start.toISOString()}`);
-      console.log(`   End: ${end.toISOString()}`);
+      console.log(`🔍 ${event.title}`);
+      console.log(`  ▶ Start: ${start.toISOString()}`);
+      console.log(`  ⏹ End: ${end.toISOString()}`);
       return start <= now && now <= end;
     });
   }
-  
   

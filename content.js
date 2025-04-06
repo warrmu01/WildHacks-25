@@ -138,17 +138,17 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
-// (async () => {
-//     const { isInTaskWindow } = await import(chrome.runtime.getURL("auth/calendar_api.js"));
+(async () => {
+    const { isInTaskWindow } = await import(chrome.runtime.getURL("auth/calendar_api.js"));
   
-//     chrome.storage.local.get(["coachEnabled", "googleAuthToken"], async ({ coachEnabled, googleAuthToken }) => {
-//       if (coachEnabled === false || !googleAuthToken) return;
+    chrome.storage.local.get(["coachEnabled", "googleAuthToken"], async ({ coachEnabled, googleAuthToken }) => {
+      if (coachEnabled === false || !googleAuthToken) return;
   
-//       const inTask = await isInTaskWindow(googleAuthToken);
-//       if (inTask) {
-//         injectCoach();
-//       } else {
-//         console.log("⏱️ Not in task window – coach will not appear");
-//       }
-//     });
-//   })();
+      const inTask = await isInTaskWindow(googleAuthToken);
+      if (inTask) {
+        injectCoach();
+      } else {
+        console.log("⏱️ Not in task window – coach will not appear");
+      }
+    });
+  })();
