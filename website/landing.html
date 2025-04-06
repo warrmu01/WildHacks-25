@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Watcher</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #001f3f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .top-right {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+
+    .center-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    img.logo {
+      width: 600px;
+      height: auto;
+      margin-bottom: 1rem;
+      padding-bottom: 20px;
+    }
+
+    .download-button {
+      background-color: #6fb3e0;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .download-button:hover {
+      background-color: #195a7f;
+      transform: translateY(-2px);
+    }
+
+    .transparent-button {
+      background-color: transparent;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .transparent-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .moods-section {
+      height: 100vh;
+      width: 100%;
+      padding-top: 3.5rem;
+      background-color: #002b5c;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .moods-section h2 {
+      font-size: 2rem;
+      margin-top: 0;
+      margin-bottom: 2.5rem;
+    }
+
+    .moods-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem 7rem;
+      max-width: 650px;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .mood-box {
+      position: relative;
+      background-color: #6fb3e0;
+      border-radius: 0.75rem; 
+      overflow: hidden;
+      padding: 0.75rem;
+      width: 95%;
+      height: 220px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: background-color 0.3s ease;
+    }
+
+    .mood-box:hover {
+      background-color: #001f3f;
+    }
+
+    .mood-box img {
+      width: 220px;
+      height: auto;
+      transform: scale(1);
+      transform-origin: center center;
+      transition: transform 0.4s ease;
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+
+    .mood-box:hover img {
+      transform: scale(1.05);
+    }
+
+    .mood-box p {
+      font-size: 1.5rem;
+      margin-top: 0.7rem;
+      font-weight: bold;
+      opacity: 1;
+    } 
+  </style>
+</head>
+<body>
+  <div class="top-right">
+    <button class="transparent-button" onclick="location.href='about.html'">About Us</button>
+  </div>
+  <div class="center-content">
+    <img class="logo" src="../assets/logo.png" alt="The Watcher Logo" />
+    <button class="download-button" onclick="location.href='#download'">Download Extension</button>
+  </div>
+
+  <div class="moods-section">
+    <h2 style="padding-bottom: 25px;">Ghost's Moods</h2>
+    <div class="moods-grid">
+      <div class="mood-box">
+        <img src="../assets/coach_base.png" alt="Neutral Ghost" />
+        <p>Neutral</p>
+      </div>
+      <div class="mood-box">
+        <img src="../assets/coach_happy.png" alt="Happy Ghost" />
+        <p>Happy</p>
+      </div>
+      <div class="mood-box">
+        <img src="../assets/coach_mad.png" alt="Mad Ghost" />
+        <p>Mad</p>
+      </div>
+      <div class="mood-box">
+        <img src="../assets/coach_confused.png" alt="Confused Ghost" />
+        <p>Confused</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
